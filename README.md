@@ -1,74 +1,41 @@
-# Jira Transition
-Transition Jira issue
+# Jira webhook
+Transition Jira issues
 
-For examples on how to use this, check out the [gajira-demo](https://github.com/atlassian/gajira-demo) repository
-> ##### Only supports Jira Cloud. Does not support Jira Server (hosted)
 
 ## Usage
 
-> ##### Note: this action requires [Jira Login Action](https://github.com/marketplace/actions/jira-login)
+> ##### Note: this action requires the modified [Jira Find Issues](https://github.com/intersentia/gajira-find-issue-key)
 
-![Issue Transition](../assets/example.gif?raw=true)
 
 Example transition action:
 
 ```yaml
+- name: Find in commit messages
+  uses: intersentia/gajira-find-issue-key@master
+  with:
+    from: commits
+}
 - name: Transition issue
   id: transition
-  uses: atlassian/gajira-transition@master
+  uses: intersentia/gajira-webhook@master
   with:
-    issue: GA-181
-    transition: "In progress"
+    issues: ${{ steps.create.outputs.issues }}
+    webhook: "https://automation.atlassian.com/pro/hooks/268c85ace7b9b03ba77a83..."
+    eventData: "{{event.pull_request.requested_reviewers.map(r->r.login)}}"
 }
 ```
 
-The `issue` parameter can be an issue id created or retrieved by an upstream action – for example, [`Create`](https://github.com/marketplace/actions/jira-create) or [`Find Issue Key`](https://github.com/marketplace/actions/jira-find). Here is full example workflow:
-
-```yaml
-on:
-  push
-
-name: Test Transition Issue
-
-jobs:
-  test-transition-issue:
-    name: Transition Issue
-    runs-on: ubuntu-latest
-    steps:
-    - name: Login
-      uses: atlassian/gajira-login@master
-      env:
-        JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
-        JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
-        JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
-        
-    - name: Create new issue
-      id: create
-      uses: atlassian/gajira-create@master
-
-    - name: Transition issue
-      uses: atlassian/gajira-transition@master
-      with:
-        issue: ${{ steps.create.outputs.issue }}
-        transition: "In progress"
-```
-----
-## Action Spec:
-
-### Environment variables
-- None
 
 ### Inputs
-- `issue` (required) - issue key to perform a transition on
-- `transition` - Case insensetive name of transition to apply. Example: `Cancel` or `Accept`
-- `transitionId` - transition id to apply to an issue
+- `issues` (required) - issue keys
+- `webhook` (required) - webhook uri
+- `eventData` - addition data you want to send along
 
 ### Outputs
 - None
 
 ### Reads fields from config file at $HOME/jira/config.yml
-- `issue`
-- `transitionId`
+- `issues`
 
 ### Writes fields to config file at $HOME/jira/config.yml
 - None

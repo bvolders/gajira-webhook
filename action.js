@@ -1,15 +1,11 @@
 const _ = require('lodash')
-const Jira = require('./common/net/Jira')
+
+const serviceName = 'webhook'
+// eslint-disable-next-line no-unused-vars
+const client = require('./common/net/client')(serviceName)
 
 module.exports = class {
-  constructor ({ githubEvent, argv, config }) {
-    this.Jira = new Jira({
-      baseUrl: config.baseUrl,
-      token: config.token,
-      email: config.email,
-    })
-
-    this.config = config
+  constructor ({ githubEvent, argv }) {
     this.argv = argv
     this.githubEvent = githubEvent
   }
@@ -17,38 +13,41 @@ module.exports = class {
   async execute () {
     const { argv } = this
 
-    const issueId = argv.issue
-    const { transitions } = await this.Jira.getIssueTransitions(issueId)
+    const uri = argv.webhook
+    const method = 'POST'
+    // eslint-disable-next-line no-unused-vars
+    const issueIds = argv.issues
+    const headers = {}
 
-    const transitionToApply = _.find(transitions, (t) => {
-      if (t.id === argv.transitionId) return true
-      if (t.name.toLowerCase() === argv.transition.toLowerCase()) return true
-    })
+    headers['Content-Type'] = 'application/json'
 
-    if (!transitionToApply) {
-      console.log('Please specify transition name or transition id.')
-      console.log('Possible transitions:')
-      transitions.forEach((t) => {
-        console.log(`{ id: ${t.id}, name: ${t.name} } transitions issue to '${t.to.name}' status.`)
-      })
-
-      return
+    const body = {
+      issues: issueIds,
+      data: argv.eventData ? this.preprocessString(argv.eventData) : null,
     }
 
-    console.log(`Selected transition:${JSON.stringify(transitionToApply, null, 4)}`)
-
-    await this.Jira.transitionIssue(issueId, {
-      transition: {
-        id: transitionToApply.id,
+    const state = {
+      req: {
+        method,
+        headers,
+        body,
+        uri,
       },
-    })
+    }
 
-    const transitionedIssue = await this.Jira.getIssue(issueId)
+    try {
+      await client(state, `webhook:${uri}`)
+    } catch (error) {
+      return new Error('Jira API error')
+    }
 
-    // console.log(`transitionedIssue:${JSON.stringify(transitionedIssue, null, 4)}`)
-    console.log(`Changed ${issueId} status to : ${_.get(transitionedIssue, 'fields.status.name')} .`)
-    console.log(`Link to issue: ${this.config.baseUrl}/browse/${issueId}`)
+    return state.res.body
+  }
 
-    return {}
+  preprocessString (str) {
+    _.templateSettings.interpolate = /{{([\s\S]+?)}}/g
+    const tmpl = _.template(str)
+
+    return tmpl({ event: this.githubEvent })
   }
 }

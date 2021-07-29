@@ -1,17 +1,17 @@
-name: Jira Issue Transition
-description: Change status of specific Jira issue
+name: Jira Webhook
+description: Call a jira webhook
 branding:
   icon: 'chevron-right'
   color: 'blue'
 inputs:
-  issue:
-    description: Key of the issue to be transitioned
+  issues:
+    description: Key of the issues to be passed
     required: true
-  transition:
+  webhook:
     description: The transition to apply to the issue, e.g. 'In Progress'
-    required: false
-  transitionId:
-    description: The id of a transition to apply to the issue
+    required: true
+  eventData:
+    description: select additional info from ?
     required: false
 runs:
   using: 'node12'
