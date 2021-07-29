@@ -4,14 +4,15 @@ Transition Jira issues
 
 ## Usage
 
-> ##### Note: this action requires the modified [Jira Find Issues](https://github.com/intersentia/gajira-find-issue-key)
+> ##### Note: this action requires the modified [Jira Find Issues](https://github.com/intersentia/gajira-find-issues)
 
 
 Example transition action:
 
 ```yaml
 - name: Find in commit messages
-  uses: intersentia/gajira-find-issue-key@master
+  id: find
+  uses: intersentia/gajira-find-issues@master
   with:
     from: commits
 }
@@ -19,7 +20,7 @@ Example transition action:
   id: transition
   uses: intersentia/gajira-webhook@master
   with:
-    issues: ${{ steps.create.outputs.issues }}
+    issues: ${{ steps.find.outputs.issues }}
     webhook: "https://automation.atlassian.com/pro/hooks/268c85ace7b9b03ba77a83..."
     eventData: "{{event.pull_request.requested_reviewers.map(r->r.login)}}"
 }

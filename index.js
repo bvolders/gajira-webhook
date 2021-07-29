@@ -6,12 +6,18 @@ const githubEvent = require(process.env.GITHUB_EVENT_PATH)
 
 async function exec () {
   try {
-    await new Action({
+    const result = await new Action({
       githubEvent,
       argv: parseArgs(),
     }).execute()
 
-    console.log('Failed  webhook.')
+    if (result) {
+      console.log('successfully called webhook.')
+
+      return
+    }
+
+    console.log('Failed webhook.')
     process.exit(78)
   } catch (error) {
     console.error(error)

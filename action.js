@@ -36,6 +36,7 @@ module.exports = class {
     }
 
     try {
+      console.log(`calling ${uri}`)
       await client(state, `webhook:${uri}`)
     } catch (error) {
       return new Error('Jira API error')
