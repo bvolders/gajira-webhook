@@ -13,6 +13,7 @@ async function exec () {
 
     if (result) {
       console.log('successfully called webhook.')
+      console.log(result.toJSON.toString())
 
       return
     }
