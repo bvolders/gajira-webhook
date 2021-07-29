@@ -21,10 +21,11 @@ module.exports = serviceName => async (state, apiMethod = 'unknown') => {
 
   state.res.body = await response.text()
 
+  console.log(`got ${state.res.body}`)
   const isJSON = (response.headers.get('content-type') || '').includes('application/json')
 
   if (isJSON && state.res.body) {
-    console.log(`got ${state.res.body}`)
+    console.log(`json ${state.res.body}`)
     state.res.body = JSON.parse(state.res.body)
   }
 
