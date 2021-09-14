@@ -16,7 +16,7 @@ module.exports = class {
     const uri = argv.webhook
     const method = 'POST'
     // eslint-disable-next-line no-unused-vars
-    const issueIds = argv.issues
+    const issueIds = argv.issues.map(i => i.issue)
     const headers = {}
     const data = argv.eventData ? this.preprocessString(argv.eventData) : null
 
