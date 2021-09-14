@@ -18,12 +18,13 @@ module.exports = class {
     // eslint-disable-next-line no-unused-vars
     const issueIds = argv.issues
     const headers = {}
+    const data = argv.eventData ? this.preprocessString(argv.eventData) : null
 
     headers['Content-Type'] = 'application/json'
 
     const body = {
       issues: issueIds,
-      data: argv.eventData ? this.preprocessString(argv.eventData) : null,
+      data,
     }
 
     const state = {
@@ -36,7 +37,8 @@ module.exports = class {
     }
 
     try {
-      console.log(`calling ${uri}`)
+      console.log(`extracted ${data}`)
+      console.log(`calling ${uri} with ${state}`)
       await client(state, `webhook:${uri}`)
     } catch (error) {
       return new Error('Jira API error')

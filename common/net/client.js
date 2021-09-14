@@ -30,6 +30,8 @@ module.exports = serviceName => async (state, apiMethod = 'unknown') => {
   }
 
   if (!response.ok) {
+    console.log(`erro during http call ${response.statusText} ${response.body}`)
+
     throw new Error(response.statusText)
   }
 
