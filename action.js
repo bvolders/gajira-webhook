@@ -24,7 +24,7 @@ module.exports = class {
 
     const body = {
       issues: issueIds,
-      data,
+      // data,
     }
 
     const state = {
@@ -48,7 +48,7 @@ module.exports = class {
   }
 
   preprocessString (str) {
-    _.templateSettings.interpolate = /{{([\s\S]+?)}}/g
+    _.templateSettings.interpolate = /{{([\s\S]+?) }}/g
     const tmpl = _.template(str)
 
     return tmpl({ event: this.githubEvent })
