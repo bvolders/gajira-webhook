@@ -22,6 +22,7 @@ module.exports = serviceName => async (state, apiMethod = 'unknown') => {
   state.res.body = await response.text()
 
   console.log(`got ${state.res.body}`)
+  console.log(`got ${JSON.stringify(response)}`)
   const isJSON = (response.headers.get('content-type') || '').includes('application/json')
 
   if (isJSON && state.res.body) {
