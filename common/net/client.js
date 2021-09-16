@@ -13,14 +13,16 @@ module.exports = serviceName => async (state, apiMethod = 'unknown') => {
     status: response.status,
   }
 
+  console.log(`intermediate state ${state.res}`)
+
   const totalTime = moment.now() - startTime
 
   console.log(`got ${JSON.stringify(response)} \n in ${totalTime}ms`)
-  console.log(`original ${JSON.stringify(response)}`)
 
   state.res.body = await response.text()
 
-  console.log(`got ${state.res.body}`)
+  console.log(`original ${JSON.stringify(response)}`)
+  console.log(`got text ${state.res.body}`)
 
   const isJSON = (response.headers.get('content-type') || '').includes('application/json')
 
