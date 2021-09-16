@@ -31,7 +31,7 @@ module.exports = class {
       req: {
         method,
         headers,
-        body,
+        body: JSON.stringify(body),
         uri,
       },
     }
