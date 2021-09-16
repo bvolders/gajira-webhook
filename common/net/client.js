@@ -1,8 +1,8 @@
 const fetch = require('node-fetch')
-// const moment = require('moment')
+const moment = require('moment')
 
 module.exports = serviceName => async (state, apiMethod = 'unknown') => {
-  // const startTime = moment.now()
+  const startTime = moment.now()
 
   const response = await fetch(state.req.url, state.req)
 
@@ -11,18 +11,14 @@ module.exports = serviceName => async (state, apiMethod = 'unknown') => {
     status: response.status,
   }
 
-  // const totalTime = moment.now() - startTime
-  // const tags = {
-  //   api_method: apiMethod,
-  //   method: state.req.method || 'GET',
-  //   response_code: response.status,
-  //   service: serviceName,
-  // }
+  const totalTime = moment.now() - startTime
+
+  console.log(`got ${JSON.stringify(response)} \n in ${totalTime}ms`)
 
   state.res.body = await response.text()
 
   console.log(`got ${state.res.body}`)
-  console.log(`got ${JSON.stringify(response)}`)
+
   const isJSON = (response.headers.get('content-type') || '').includes('application/json')
 
   if (isJSON && state.res.body) {
