@@ -16,6 +16,7 @@ module.exports = serviceName => async (state, apiMethod = 'unknown') => {
   const totalTime = moment.now() - startTime
 
   console.log(`got ${JSON.stringify(response)} \n in ${totalTime}ms`)
+  console.log(`original ${JSON.stringify(response)}`)
 
   state.res.body = await response.text()
 
@@ -26,6 +27,8 @@ module.exports = serviceName => async (state, apiMethod = 'unknown') => {
   if (isJSON && state.res.body) {
     console.log(`json ${state.res.body}`)
     state.res.body = JSON.parse(state.res.body)
+  } else if (state.res.body == null || state.res.body.length() === 0) {
+    state.res.body = 'nothing'
   }
 
   if (!response.ok) {
