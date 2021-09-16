@@ -13,7 +13,7 @@ module.exports = class {
   async execute () {
     const { argv } = this
 
-    const uri = argv.webhook
+    const url = argv.webhook
     const method = 'POST'
     // eslint-disable-next-line no-unused-vars
     const issueIds = argv.issues
@@ -32,13 +32,13 @@ module.exports = class {
         method,
         headers,
         body: JSON.stringify(body),
-        uri,
+        url,
       },
     }
 
     try {
       console.log(`extracted ${JSON.stringify(data)}`)
-      console.log(`calling ${uri} with ${JSON.stringify(state)}`)
+      console.log(`calling ${url} with ${JSON.stringify(state)}`)
       await client(state, 'webhook')
     } catch (error) {
       return new Error('Jira API error')
