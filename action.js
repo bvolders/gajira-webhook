@@ -24,7 +24,7 @@ module.exports = class {
 
     const body = {
       issues: issueIds,
-      data: JSON.stringify(data),
+      data: this.githubEvent, // JSON.stringify(data),
     }
 
     const state = {
