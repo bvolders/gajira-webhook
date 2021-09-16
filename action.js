@@ -39,7 +39,7 @@ module.exports = class {
     try {
       console.log(`extracted ${JSON.stringify(data)}`)
       console.log(`calling ${uri} with ${JSON.stringify(state)}`)
-      await client(state, `webhook:${uri}`)
+      await client(state, 'webhook')
     } catch (error) {
       return new Error('Jira API error')
     }

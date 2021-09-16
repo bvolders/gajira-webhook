@@ -4,6 +4,8 @@ const moment = require('moment')
 module.exports = serviceName => async (state, apiMethod = 'unknown') => {
   const startTime = moment.now()
 
+  console.log(`trying to call ${state.req.url} starting ${startTime}`)
+
   const response = await fetch(state.req.url, state.req)
 
   state.res = {
